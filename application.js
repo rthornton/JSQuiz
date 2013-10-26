@@ -14,14 +14,21 @@ $(document).ready(function() {
             // hide question at index -1
             $('#question').empty();
         }
-        // Create question
-        var newQuestion = allQuestions[index];
-        var prompt = newQuestion['question'];
-        $('<p>' + prompt + '</p>').appendTo($("#question"));
-        for (var i = 0; i < newQuestion['choices'].length; i++) {
-            $('<input type="radio" name="item" id="item" value="' + i + '">')
-                .appendTo($("#question")).before(newQuestion['choices'][i]);
 
+        if (index < allQuestions.length) {
+            // Create question
+            var newQuestion = allQuestions[index];
+            var prompt = newQuestion['question'];
+            $('<p>' + prompt + '</p>').appendTo($("#question"));
+            for (var i = 0; i < newQuestion['choices'].length; i++) {
+                $('<input type="radio" name="item" id="item" value="' + i + '">')
+                    .appendTo($("#question")).before(newQuestion['choices'][i]);
+
+            }
+        } else {
+            $('<p>Your score is: ' + score + '</p>').appendTo($("#question"));
+            currentQuestionIndex = -1
+            score = 0;
         }
     }
 
@@ -34,9 +41,9 @@ $(document).ready(function() {
            var userChoice = $("#currentQuestion input[type='radio']:checked").val();
            if (userChoice == allQuestions[currentQuestionIndex]['correctAnswer']) {
                score = score + 1;
-               alert("Good job.  Your score is now: " + score);
-           } else {
-               alert("Nice try.  Your score is still: " + score);
+//               alert("Good job.  Your score is now: " + score);
+//           } else {
+//               alert("Nice try.  Your score is still: " + score);
            }
        }
 
