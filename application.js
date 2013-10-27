@@ -14,6 +14,11 @@ $(document).ready(function() {
         return currentQuestionIndex <= 0;
     }
 
+    function disableBackNext() {
+        $('#back').attr("disabled", "disabled");
+        $('#next').attr("disabled", "disabled");
+    }
+
     function setBackButtonStatus() {
         if (shouldDisableBack()) {
             $('#back').attr("disabled", "disabled");
@@ -63,10 +68,20 @@ $(document).ready(function() {
             buildQuestion(newQuestion, index);
         } else {
             $('<p>Your score is: ' + score + '</p>').appendTo($("#question"));
-            currentQuestionIndex = -1;
-            score = 0;
+            disableBackNext();
+            $("#restart").removeAttr("hidden", "hidden");
         }
     }
+
+    $("#restart").on("click", function(e) {
+        e.preventDefault();
+        currentQuestionIndex = 0;
+        score = 0;
+        userResponses.empty();
+
+        // Why isn't this call executing???????
+        showQuestion(currentQuestionIndex);
+    });
 
     $("#back").on("click", function(e) {
         e.preventDefault();
