@@ -7,17 +7,33 @@ $(document).ready(function() {
         {question: "What is the air-speed of an unladen swallow?", choices: ["10mph", "15mph", "European", "African"], correctAnswer:2}
     ];
     var userResponses = [];
-    var currentQuestionIndex = -1;
+    var currentQuestionIndex = 0;
     var score = 0;
 
-    function showHideElements(index) {
-        if (index >= 0) {
-            // hide question at index -1
-            $('#question').empty();
-            $('#back').show();
+    function shouldDisableBack() {
+        return currentQuestionIndex <= 0;
+    }
+
+    function setBackButtonStatus() {
+        if (shouldDisableBack()) {
+            $('#back').attr("disabled", "disabled");
         } else {
-            $('#back').hide();
+            $('#back').removeAttr("disabled", "disabled");
         }
+    }
+
+    function clearPreviousQuestion(index) {
+        if (index >= 0) {
+            if (userResponses.length > 0) {
+                // hide question at index -1
+                $('#question').empty();
+            }
+        }
+    }
+
+    function showHideElements(index) {
+        setBackButtonStatus();
+        clearPreviousQuestion(index);
     }
 
     function buildQuestion(newQuestion, index) {
@@ -25,20 +41,16 @@ $(document).ready(function() {
         $('<p>' + prompt + '</p>').appendTo($("#question"));
         for (var i = 0; i < newQuestion['choices'].length; i++) {
             if (i == 0) {
-                $('<input type="radio" name="item" id="item" class="required" value="' + i + '">')
+                $('<input type="radio" name="item" id="item'+i+'" class="required" value="' + i + '">')
                     .appendTo($("#question")).before(newQuestion['choices'][i]);
             } else {
-                $('<input type="radio" name="item" id="item" value="' + i + '">')
+                $('<input type="radio" name="item" id="item'+i+'" value="' + i + '">')
                     .appendTo($("#question")).before(newQuestion['choices'][i]);
             }
         }
 
         if (userResponses[index] != undefined) {
-            // Set selected
-
-
-            // Not setting checked correctly.
-            $("#currentQuestion input[val='" + userResponses[index] + "']").attr('checked', true);
+            $("#item" + userResponses[index]).attr('checked', true);
         }
     }
 
@@ -80,5 +92,6 @@ $(document).ready(function() {
         showQuestion(currentQuestionIndex);
     });
 
+    showQuestion(currentQuestionIndex);
 });
 
