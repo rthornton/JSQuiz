@@ -6,51 +6,79 @@ $(document).ready(function() {
         {question: "What is your quest?", choices: ["Gwen", "Shoes", "Grail"], correctAnswer:2},
         {question: "What is the air-speed of an unladen swallow?", choices: ["10mph", "15mph", "European", "African"], correctAnswer:2}
     ];
+    var userResponses = [];
     var currentQuestionIndex = -1;
     var score = 0;
 
-    function showQuestion(index) {
-        if (index > 0) {
+    function showHideElements(index) {
+        if (index >= 0) {
             // hide question at index -1
             $('#question').empty();
+            $('#back').show();
+        } else {
+            $('#back').hide();
         }
+    }
+
+    function buildQuestion(newQuestion, index) {
+        var prompt = newQuestion['question'];
+        $('<p>' + prompt + '</p>').appendTo($("#question"));
+        for (var i = 0; i < newQuestion['choices'].length; i++) {
+            if (i == 0) {
+                $('<input type="radio" name="item" id="item" class="required" value="' + i + '">')
+                    .appendTo($("#question")).before(newQuestion['choices'][i]);
+            } else {
+                $('<input type="radio" name="item" id="item" value="' + i + '">')
+                    .appendTo($("#question")).before(newQuestion['choices'][i]);
+            }
+        }
+
+        if (userResponses[index] != undefined) {
+            // Set selected
+
+
+            // Not setting checked correctly.
+            $("#currentQuestion input[val='" + userResponses[index] + "']").attr('checked', true);
+        }
+    }
+
+    function showQuestion(index) {
+        showHideElements(index);
 
         if (index < allQuestions.length) {
             // Create question
             var newQuestion = allQuestions[index];
-            var prompt = newQuestion['question'];
-            $('<p>' + prompt + '</p>').appendTo($("#question"));
-            for (var i = 0; i < newQuestion['choices'].length; i++) {
-                $('<input type="radio" name="item" id="item" value="' + i + '">')
-                    .appendTo($("#question")).before(newQuestion['choices'][i]);
-
-            }
+            buildQuestion(newQuestion, index);
         } else {
             $('<p>Your score is: ' + score + '</p>').appendTo($("#question"));
-            currentQuestionIndex = -1
+            currentQuestionIndex = -1;
             score = 0;
         }
     }
 
-//   $('#next').on('click', function() {
-   $('#currentQuestion').submit(function(e) {
-       e.preventDefault();
-//       var currentQuestionIndex = $('#question').data('content');
-//       var currentScore = $('#question').data('score');
-       if (currentQuestionIndex >= 0) {
-           var userChoice = $("#currentQuestion input[type='radio']:checked").val();
-           if (userChoice == allQuestions[currentQuestionIndex]['correctAnswer']) {
-               score = score + 1;
-//               alert("Good job.  Your score is now: " + score);
-//           } else {
-//               alert("Nice try.  Your score is still: " + score);
-           }
-       }
+    $("#back").on("click", function(e) {
+        e.preventDefault();
 
-       currentQuestionIndex = currentQuestionIndex + 1;
-//       $('#question').data('content', currentQuestionIndex);
-       showQuestion(currentQuestionIndex);
-   });
+        currentQuestionIndex = currentQuestionIndex - 1;
+        showQuestion(currentQuestionIndex);
+    });
+
+    $("#next").on("click", function(e) {
+        e.preventDefault();
+        if (currentQuestionIndex >= 0) {
+            var userChoice = $("#currentQuestion input[type='radio']:checked").val();
+            if (userChoice == undefined) {
+                alert("You must select something");
+                return;
+            } else if (userChoice == allQuestions[currentQuestionIndex]['correctAnswer']) {
+                score = score + 1;
+            }
+        }
+
+        userResponses[currentQuestionIndex] = userChoice;
+        currentQuestionIndex = currentQuestionIndex + 1;
+        showQuestion(currentQuestionIndex);
+    });
 
 });
 
