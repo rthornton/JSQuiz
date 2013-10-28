@@ -31,7 +31,9 @@ $(document).ready(function() {
         if (index >= 0) {
             if (userResponses.length > 0) {
                 // hide question at index -1
-                $('#question').empty();
+//                $('#question').fadeOut('slow', function() {
+                    $('#question').empty();
+//                });
             }
         }
     }
@@ -77,7 +79,9 @@ $(document).ready(function() {
         e.preventDefault();
         currentQuestionIndex = 0;
         score = 0;
-        userResponses.empty();
+        userResponses = [];
+        $("#restart").attr("hidden", "hidden");
+        $('#next').removeAttr("disabled", "disabled");
 
         // Why isn't this call executing???????
         showQuestion(currentQuestionIndex);
